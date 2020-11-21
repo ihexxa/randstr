@@ -6,10 +6,6 @@
 
 _Customizable random string generator in Go/Golang._
 
-### Install
-
-Install randstr: `go get github.com/ihexxa/randstr`
-
 ### Examples
 
 Document is [here](https://pkg.go.dev/github.com/ihexxa/randstr).
