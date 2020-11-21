@@ -18,24 +18,13 @@ Document is [here](https://pkg.go.dev/github.com/ihexxa/randstr).
 ```go
 import "github.com/ihexxa/randstr"
 
-var randomString string
-
-// unfixed length (at most 10 alphabets) string generator
-unfixedLenAlphabets := randstr.NewAlphabetStr(false, 10)
-randomString = unfixedLenAlphabets.Gen()
-
-// fixed length (10 numbers) generator generator
-fixedLenNums := randstr.NewNumberStr(true, 10) 
-randomString = fixedLenNums.Gen()
-
-// fixed length (5 alphabets or numbers) string generator
-fixedLenAlnums := randstr.NewAlnumStr(true, 5)
-randomString = fixedLenAlnums.Gen() 
-
-// customized generator 
+// customized generator
 candidates := []string{"你", "好", "世", "界"}
 randStr := randstr.NewRandStr(candidates, true, 8)
-randomString = randStr.Gen() 
-// output could be: 世世界你你你你好
+
+fmt.Println(randStr.Gen()) // output could be: 世世界你你你你好
+fmt.Println(randStr.Alphabets())
+fmt.Println(randStr.Numbers())
+fmt.Println(randStr.Alnums())
 
 ```

@@ -1,50 +1,66 @@
 package randstr
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestGenerators(t *testing.T) {
-	alphaSet := map[string]bool{}
-	numSet := map[string]bool{}
-	alnumSet := map[string]bool{}
-
-	for _, ch := range alphabetSet {
-		alphaSet[ch] = true
-		alnumSet[ch] = true
-	}
-	for _, ch := range numberSet {
-		numSet[ch] = true
-		alnumSet[ch] = true
-	}
-
-	maxLen := 10
-
-	t.Run("test fixed size string generating", func(t *testing.T) {
-		alnumStr := NewAlnumStr(true, maxLen)
-		for i := 0; i < 100; i++ {
-			str := alnumStr.Gen()
-			if len(str) != maxLen {
-				t.Errorf("'%s' length is not %d", str, maxLen)
-			}
-			for _, ch := range str {
-				if !alnumSet[string(ch)] {
-					t.Errorf("'%s' is not alnum", str)
+	// rely on dynamic programming to check if str can be composed of candidates
+	validate := func(str string, candidates []string) {
+		match := make([]bool, len(str))
+		for j := range str {
+			for _, candidate := range candidates {
+				if j-len(candidate) >= 0 && match[j-len(candidate)] {
+					if str[j+1-len(candidate):j+1] == candidate {
+						match[j] = true
+						break
+					}
+				} else if j == 0 {
+					if string(str[0:1]) == candidate {
+						match[j] = true
+						break
+					}
+				} else if j-len(candidate) == -1 && str[0:j+1] == candidate {
+					match[j] = true
+					break
 				}
 			}
 		}
+		if !match[len(match)-1] {
+			t.Fatalf("no match for random str %s candidates(%v) match(%v)", str, candidates, match)
+		}
+	}
+
+	t.Run("test Gen()", func(t *testing.T) {
+		candidates := []string{"a", "bc", "def"}
+		randStr := NewRandStr(candidates, true, 4)
+		for i := 0; i < 10; i++ {
+			str := randStr.Gen()
+			validate(str, candidates)
+		}
 	})
 
-	t.Run("test unfixed size string generating", func(t *testing.T) {
-		alnumStr := NewAlnumStr(false, maxLen)
-		for i := 0; i < 100; i++ {
-			str := alnumStr.Gen()
-			if len(str) > maxLen {
-				t.Errorf("'%s' length is longer than max length %d", str, maxLen)
-			}
-			for _, ch := range str {
-				if !alnumSet[string(ch)] {
-					t.Errorf("'%s' is not alnum", str)
-				}
-			}
+	t.Run("test Alnums()", func(t *testing.T) {
+		randStr := NewRandStr([]string{}, true, 4)
+		for i := 0; i < 10; i++ {
+			str := randStr.Alnums()
+			validate(str, append(numberSet, alphabetSet...))
+		}
+	})
+
+	t.Run("test Alphabets()", func(t *testing.T) {
+		randStr := NewRandStr([]string{}, true, 4)
+		for i := 0; i < 10; i++ {
+			str := randStr.Alphabets()
+			validate(str, alphabetSet)
+		}
+	})
+
+	t.Run("test Numbers()", func(t *testing.T) {
+		randStr := NewRandStr([]string{}, true, 4)
+		for i := 0; i < 10; i++ {
+			str := randStr.Numbers()
+			validate(str, numberSet)
 		}
 	})
 }

@@ -2,7 +2,6 @@ package randstr
 
 import (
 	"math/rand"
-	"time"
 )
 
 var (
@@ -13,28 +12,30 @@ var (
 	numberSet = []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
 )
 
-// Generator generates random strings
+// RandStr is random string generator
 type RandStr struct {
-	strSet     []string
-	isLenFixed bool
-	maxLen     int
+	seed            int64
+	candidates      []string
+	sampleSizeFixed bool
+	sampleSizeMax   int
 }
 
-func NewRandStr(strSet []string, isLenFixed bool, maxLen int) *RandStr {
+// NewRandStr create a new generator
+func NewRandStr(candidates []string, sampleSizeFixed bool, sampleSizeMax int) *RandStr {
 	return &RandStr{
-		strSet:     strSet,
-		isLenFixed: isLenFixed,
-		maxLen:     maxLen,
+		candidates:      candidates,
+		sampleSizeFixed: sampleSizeFixed,
+		sampleSizeMax:   sampleSizeMax,
 	}
 }
 
-func (g *RandStr) Gen() string {
-	rand.Seed(time.Now().UnixNano())
+func (g *RandStr) genBy(candidates []string) string {
+	rand.Seed(g.seed)
 
 	randStr := ""
-	for i := 0; i < g.maxLen; i++ {
-		randStr += g.strSet[rand.Intn(len(g.strSet))]
-		if !g.isLenFixed && rand.Intn(2) == 1 {
+	for i := 0; i < g.sampleSizeMax; i++ {
+		randStr += candidates[rand.Intn(len(candidates))]
+		if i != 0 && !g.sampleSizeFixed && rand.Intn(2) == 1 { // at least sample once
 			break
 		}
 	}
@@ -42,35 +43,27 @@ func (g *RandStr) Gen() string {
 	return randStr
 }
 
-// AlphabetStr is random alphabetic string generator
-type AlphabetStr struct {
-	*RandStr
+// Seed sets a seed to math.rand
+func (g *RandStr) Seed(seed int64) {
+	g.seed = seed
 }
 
-func NewAlphabetStr(isLenFixed bool, maxLen int) *AlphabetStr {
-	return &AlphabetStr{
-		RandStr: NewRandStr(alphabetSet, isLenFixed, maxLen),
-	}
+// Gen generates a random string according to candidates
+func (g *RandStr) Gen() string {
+	return g.genBy(g.candidates)
 }
 
-// NumberStr is random numeric string generator
-type NumberStr struct {
-	*RandStr
+// Alphabets generates a random string with alphabets
+func (g *RandStr) Alphabets() string {
+	return g.genBy(alphabetSet)
 }
 
-func NewNumberStr(isLenFixed bool, maxLen int) *NumberStr {
-	return &NumberStr{
-		RandStr: NewRandStr(numberSet, isLenFixed, maxLen),
-	}
+// Numbers generates a random string with numbers
+func (g *RandStr) Numbers() string {
+	return g.genBy(numberSet)
 }
 
-// AlnumStr is random alphanumeric string generator
-type AlnumStr struct {
-	*RandStr
-}
-
-func NewAlnumStr(isLenFixed bool, maxLen int) *AlnumStr {
-	return &AlnumStr{
-		RandStr: NewRandStr(append(numberSet, alphabetSet...), isLenFixed, maxLen),
-	}
+// Alnums generates a random string with alphabets and numbers
+func (g *RandStr) Alnums() string {
+	return g.genBy(append(alphabetSet, numberSet...))
 }
