@@ -6,13 +6,13 @@
 
 _Customizable random string generator in Go/Golang._
 
-### Examples
+## Examples
 
 Document is [here](https://pkg.go.dev/github.com/ihexxa/randstr).
 
 **Note**: This library should NOT be used in security-critical system.
 
-# Generate random strings with numbers/alphabets/alnums/candidates:
+### Generate random strings with numbers/alphabets/alnums/candidates:
 
 ```go
 import "github.com/ihexxa/randstr"
@@ -28,7 +28,7 @@ fmt.Println(randStr.Alnums())
 
 ```
 
-# Generate fixed-length random strings:
+### Generate fixed-length random strings:
 
 ```go
 import "github.com/ihexxa/randstr"
@@ -44,7 +44,7 @@ fmt.Println(randStr.Gen())
 
 ```
 
-# Generate random slices:
+### Generate random slices:
 
 ```go
 import "github.com/ihexxa/randstr"

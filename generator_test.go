@@ -2,6 +2,7 @@ package randstr
 
 import (
 	"testing"
+	"fmt"
 )
 
 func TestGenerators(t *testing.T) {
@@ -36,6 +37,7 @@ func TestGenerators(t *testing.T) {
 		randStr := NewRandStr(candidates, true, 4)
 		for i := 0; i < 10; i++ {
 			str := randStr.Gen()
+			fmt.Println(str)
 			validate(str, candidates)
 		}
 	})
@@ -44,14 +46,16 @@ func TestGenerators(t *testing.T) {
 		randStr := NewRandStr([]string{}, true, 4)
 		for i := 0; i < 10; i++ {
 			str := randStr.Alnums()
+			fmt.Println(str)
 			validate(str, append(numberSet, alphabetSet...))
 		}
 	})
 
 	t.Run("test Alphabets()", func(t *testing.T) {
-		randStr := NewRandStr([]string{}, true, 4)
+		randStr := NewRandStr([]string{}, false, 4)
 		for i := 0; i < 10; i++ {
 			str := randStr.Alphabets()
+			fmt.Println(str)
 			validate(str, alphabetSet)
 		}
 	})
@@ -60,6 +64,7 @@ func TestGenerators(t *testing.T) {
 		randStr := NewRandStr([]string{}, true, 4)
 		for i := 0; i < 10; i++ {
 			str := randStr.Numbers()
+			fmt.Println(str)
 			validate(str, numberSet)
 		}
 	})
