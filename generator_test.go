@@ -1,8 +1,8 @@
 package randstr
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func TestGenerators(t *testing.T) {
